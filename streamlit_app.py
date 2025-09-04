@@ -333,7 +333,7 @@ def main():
             state = st.selectbox("Location for cost estimates", states, index=s_idx)
             st.session_state.inputs["state"] = state
 
-            elif step == 2:
+    elif step == 2:
         st.header("Step 2 · Choose care plans")
         inp = st.session_state.inputs
 
