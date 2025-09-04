@@ -599,32 +599,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-### Updated CHANGELOG.md
-Add this to the end of your `CHANGELOG.md`:
-```
-## 2025-09-03
-- Fixed `KeyError: 'maintain_home'` by using `inp.get("maintain_home", False)` in Step 3.
-- Updated `APP_VERSION` to `v2025-09-03-rb22`.
-- Retained all previous updates: yes/no buttons, home mods, sell-home logic, care level/context, mobility, chronic conditions, VA link in Benefits, Altair chart fix, Step 3 expander title fix.
-```
-
-### Deployment Instructions
-1. **Replace File**:
-   - Overwrite `streamlit_app.py` with the code above, commit with “Fix KeyError and update to v2025-09-03-rb22”.
-   - Update `CHANGELOG.md` with the new entry, commit with “Update CHANGELOG for rb22”.
-   - Reuse other files from `v2025-09-03-rb21`.
-
-3. **Redeploy to Streamlit Cloud**:
-   - Redeploy, check logs for errors.
-   - Verify no errors, `App v2025-09-03-rb22` shows.
-   - Test flow: Pick “Myself” → Enter “John” → Yes, include spouse → Enter “Terry” → Yes, keep home → Yes, sell → Washington → Next.
-   - Step 2: John’s In-Home, Terry’s None.
-   - Step 3: All drawers open, no errors.
-   - Step 4: Chart displays.
-
-### Notes
-- **Fix**: The `KeyError` is gone with the safe `get` method.
-- **Flow**: Maintains prior updates, no regressions.
-- **Next**: Test Step 3 thoroughly, especially with multiple people. Report back if any thing’s off.
