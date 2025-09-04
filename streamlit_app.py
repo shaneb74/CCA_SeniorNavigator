@@ -333,37 +333,7 @@ def main():
             state = st.selectbox("Location for cost estimates", states, index=s_idx)
             st.session_state.inputs["state"] = state
 
-            st.markdown("**Home & funding approach**")
-            home_plan = st.radio("How will the home factor into paying for care?", [
-                "Keep living in the home (don’t tap equity)",
-                "Sell the home (use net proceeds)",
-                "Use reverse mortgage (HECM)",
-                "Consider a HELOC (home equity line)"
-            ], index=0)
-            inp = st.session_state.inputs
-            inp["maintain_home_household"] = (home_plan == "Keep living in the home (don’t tap equity)")
-            inp["home_to_assets"] = (home_plan == "Sell the home (use net proceeds)")
-            inp["expect_hecm"] = (home_plan == "Use reverse mortgage (HECM)")
-            inp["expect_heloc"] = (home_plan == "Consider a HELOC (home equity line)")
-
-            if inp["home_to_assets"]:
-                st.markdown("**Home sale estimate**")
-                sell_price = st.number_input("Estimated sale price", min_value=0.0, value=float(inp.get("sell_price", 0.0)), step=1000.0, format="%.2f")
-                mortgage_payoff = st.number_input("Est. mortgage payoff", min_value=0.0, value=float(inp.get("mortgage_payoff", 0.0)), step=1000.0, format="%.2f")
-                fees = st.number_input("Selling costs (fees, repairs, etc.)", min_value=0.0, value=float(inp.get("selling_fees", 0.0)), step=500.0, format="%.2f")
-                net = max(0.0, sell_price - mortgage_payoff - fees)
-                st.info(f"Estimated **net proceeds**: {mfmt(net)} → will appear in Assets later.")
-                inp.update({"sell_price": sell_price, "mortgage_payoff": mortgage_payoff, "selling_fees": fees, "home_equity": net})
-
-        with c2:
-            st.info("Tip: You can save your plan from the sidebar at any time.")
-
-        c1, c2 = st.columns(2)
-        if c1.button("Continue →", type="primary"):
-            st.session_state.step = 2
-
-    # Step 2
-    elif step == 2:
+            elif step == 2:
         st.header("Step 2 · Choose care plans")
         inp = st.session_state.inputs
 
@@ -423,6 +393,41 @@ def main():
             st.info("Home plan: **Consider a HELOC** — Optional draw and payment in Assets.")
         else:
             st.info("Home plan: **Keep living in the home** — Mortgage/taxes/insurance/utilities will be included.")
+
+# Unified home equity & housing options drawer
+with st.expander("Home equity & housing options"):
+    # derive current selection
+    if inp.get("home_to_assets"):
+        idx = 1
+    elif inp.get("expect_hecm"):
+        idx = 2
+    elif inp.get("expect_heloc"):
+        idx = 3
+    else:
+        idx = 0
+    choice = st.radio(
+        "How will the home factor into paying for care?",
+        ["Keep the home (don’t tap equity)", "Sell the home (use net proceeds)", "Use reverse mortgage (HECM)", "Consider a HELOC (home equity line)"],
+        index=idx,
+        help="You can change this any time. If you choose Sell, net proceeds will be added to Assets; if you choose HECM/HELOC, you can add a monthly draw in Assets."
+    )
+    # normalize flags
+    inp["maintain_home_household"] = (choice == "Keep the home (don’t tap equity)")
+    inp["home_to_assets"] = (choice == "Sell the home (use net proceeds)")
+    inp["expect_hecm"] = (choice == "Use reverse mortgage (HECM)")
+    inp["expect_heloc"] = (choice == "Consider a HELOC (home equity line)")
+
+    if inp["home_to_assets"]:
+        c1,c2,c3 = st.columns(3)
+        sell_price = c1.number_input("Expected sale price", min_value=0.0, value=float(inp.get("home_sale_price", 0) or 0), step=1000.0, format="%.2f")
+        payoff = c2.number_input("Mortgage payoff", min_value=0.0, value=float(inp.get("home_mortgage_payoff", 0) or 0), step=1000.0, format="%.2f")
+        fees = c3.number_input("Selling costs & fees", min_value=0.0, value=float(inp.get("home_selling_fees", 0) or 0), step=1000.0, format="%.2f")
+        net = max(0.0, sell_price - payoff - fees)
+        st.caption(f"Net proceeds that will go to Assets: **${net:,.2f}**")
+        inp["home_sale_price"] = sell_price
+        inp["home_mortgage_payoff"] = payoff
+        inp["home_selling_fees"] = fees
+        inp["home_net_proceeds"] = net
 
         def render_group(gid: str, rename: Optional[Dict[str,str]] = None):
             g = spec_groups[gid]
