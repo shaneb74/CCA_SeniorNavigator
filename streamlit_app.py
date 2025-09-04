@@ -5,7 +5,7 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 
-APP_VERSION = "v2025-09-03-rb23"
+APP_VERSION = "v2025-09-03-rb24"
 SPEC_PATH = "senior_care_calculator_v5_full_with_instructions_ui.json"
 OVERLAY_PATH = "senior_care_modular_overlay.json"
 
@@ -303,7 +303,7 @@ def mark_touched(drawer):
 def expander(drawer, title, preview_val=0.0):
     """Render an expander with preview value, with a safe default."""
     is_open = drawer in st.session_state.touched
-    with st.expander(f"{title}", expanded=is_open):
+    with st.expander(title, expanded=is_open):
         return st.container()
 
 def home_mods_ui(inp, spec):
@@ -419,19 +419,21 @@ def main():
         )
         if audience == "Myself":
             names["A"] = st.text_input("Awesome-so you're planning for yourself. What's your name?", value=names.get("A", "Me"), help="Enter your name.")
+            st.markdown("Is there someone else—like a spouse—you'd like to plan for too?")
             col1, col2 = st.columns(2)
-            if col1.button("Yes, include my spouse"):
+            if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name?", value="", help="Enter your spouse or partner's name.")
                 st.session_state.include_b = True
             if col2.button("No, just me"):
                 st.session_state.include_b = False
         elif audience == "One parent":
             names["A"] = st.text_input("Awesome-so you're planning for one parent. What's their name?", value=names.get("A", "Mom"), help="Enter your parent's name.")
+            st.markdown("Is there someone else—like a spouse—you'd like to plan for too?")
             col1, col2 = st.columns(2)
-            if col1.button("Yes, include a spouse"):
+            if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name? We'll walk you through both.", value="", help="Enter the spouse or partner's name.")
                 st.session_state.include_b = True
-            if col2.button("No, no spouse"):
+            if col2.button("No, just me"):
                 st.session_state.include_b = False
         elif audience == "Both parents":
             names["A"] = st.text_input("Awesome-so you're planning for both parents. What's the first parent's name?", value=names.get("A", "Mom"), help="Enter the first parent's name.")
@@ -439,18 +441,21 @@ def main():
             st.session_state.include_b = True
         else:  # Loved one or family member
             names["A"] = st.text_input("Awesome-so you're planning for a loved one or family member. What's their name?", value=names.get("A", "Loved One"), help="Enter the loved one or family member's name.")
+            st.markdown("Is there someone else—like a spouse—you'd like to plan for too?")
             col1, col2 = st.columns(2)
-            if col1.button("Yes, include a spouse or partner"):
+            if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name? We'll walk you through both.", value="", help="Enter the spouse or partner's name.")
                 st.session_state.include_b = True
-            if col2.button("No, no spouse or partner"):
+            if col2.button("No, just me"):
                 st.session_state.include_b = False
+        st.markdown("Will you keep the house while care happens?")
         col1, col2 = st.columns(2)
-        if col1.button("Yes, keep the home"):
+        if col1.button("Yes, keep it"):
             inp["maintain_home"] = True
         if col2.button("No, not keeping it"):
             inp["maintain_home"] = False
         if inp.get("maintain_home", False):
+            st.markdown("Planning to sell the home to cover care?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, plan to sell"):
                 inp["sell_home"] = True
