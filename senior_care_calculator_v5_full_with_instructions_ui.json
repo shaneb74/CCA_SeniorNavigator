@@ -72,18 +72,18 @@
     {
       "id": "group_income_person_a",
       "module": "income",
-      "label": "Income — Person A — Enter monthly income (Social Security, Pension).",
+      "label": "Income \u2014 Person A \u2014 Enter monthly income (Social Security, Pension).",
       "prompt": "",
       "fields": [
         {
           "field": "social_security_person_a",
-          "label": "Social Security — Person A",
+          "label": "Social Security \u2014 Person A",
           "kind": "currency",
           "default": 0
         },
         {
           "field": "pension_person_a",
-          "label": "Pension — Person A",
+          "label": "Pension \u2014 Person A",
           "kind": "currency",
           "default": 0
         }
@@ -92,18 +92,18 @@
     {
       "id": "group_income_person_b",
       "module": "income",
-      "label": "Income — Person B — Enter monthly income (Social Security, Pension).",
+      "label": "Income \u2014 Person B \u2014 Enter monthly income (Social Security, Pension).",
       "prompt": "",
       "fields": [
         {
           "field": "social_security_person_b",
-          "label": "Social Security — Person B",
+          "label": "Social Security \u2014 Person B",
           "kind": "currency",
           "default": 0
         },
         {
           "field": "pension_person_b",
-          "label": "Pension — Person B",
+          "label": "Pension \u2014 Person B",
           "kind": "currency",
           "default": 0
         }
@@ -117,27 +117,27 @@
       "fields": [
         {
           "field": "va_benefit_person_a",
-          "label": "VA benefit — Person A (monthly)",
+          "label": "VA benefit \u2014 Person A (monthly)",
           "kind": "currency",
           "default": 0
         },
         {
           "field": "va_benefit_person_b",
-          "label": "VA benefit — Person B (monthly)",
+          "label": "VA benefit \u2014 Person B (monthly)",
           "kind": "currency",
           "default": 0
         },
         {
           "field": "ltc_insurance_person_a",
-          "label": "Long-Term Care insurance — Person A",
+          "label": "Long-Term Care insurance \u2014 Person A",
           "kind": "boolean",
-          "default": false
+          "default": "No"
         },
         {
           "field": "ltc_insurance_person_b",
-          "label": "Long-Term Care insurance — Person B",
+          "label": "Long-Term Care insurance \u2014 Person B",
           "kind": "boolean",
-          "default": false
+          "default": "No"
         }
       ]
     },
@@ -183,7 +183,7 @@
       "id": "group_optional",
       "module": "optional",
       "label": "Other monthly costs (optional)",
-      "prompt": "If it doesn’t apply, leave it at 0.",
+      "prompt": "If it doesn\u2019t apply, leave it at 0.",
       "fields": [
         {
           "field": "medicare_premiums",

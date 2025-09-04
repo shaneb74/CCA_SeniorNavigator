@@ -1,6 +1,8 @@
+# Changelog
+
 ## 2025-09-03
-- Fixed Step 3 expander titles to show only labels (e.g., Income — Mom) without preview values, resolving display issues.
-- Ensured all Step 3 drawers (Income, Benefits, Home, Assets) display correctly with proper field loading.
-- Fixed Altair chart error in Step 4 by using pd.DataFrame for data input and handling infinite years with "Forever" fallback.
-- Updated `APP_VERSION` to `v2025-09-03-rb23`.
-- Retained all previous updates: yes/no buttons, home mods, sell-home logic, care level/context, mobility, chronic conditions, VA link in Benefits.
+- Replace deprecated `st.experimental_rerun` with safe `st_rerun()` helper; only used for file upload.
+- Add explicit couple scenario and restore spouse/parent naming; always include second person for couple.
+- Move common/aggregate Income and Assets to overlay-driven schema.
+- Keep UI groups modular: overlay can replace or append fields; new groups can be added without Python edits.
+- Improve readability: larger base font, clearer section prompts.
