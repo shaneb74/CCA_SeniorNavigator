@@ -5,7 +5,7 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 
-APP_VERSION = "v2025-09-03-rb24"
+APP_VERSION = "v2025-09-03-rb25"
 SPEC_PATH = "senior_care_calculator_v5_full_with_instructions_ui.json"
 OVERLAY_PATH = "senior_care_modular_overlay.json"
 
@@ -418,8 +418,8 @@ def main():
             help="Select who this plan is for to personalize the experience."
         )
         if audience == "Myself":
-            names["A"] = st.text_input("Awesome-so you're planning for yourself. What's your name?", value=names.get("A", "Me"), help="Enter your name.")
-            st.markdown("Is there someone else—like a spouse—you'd like to plan for too?")
+            names["A"] = st.text_input("Awesome—so you're planning for yourself. What's your name?", value=names.get("A", "Me"), help="Enter your name.")
+            st.markdown("Planning for just you is a start, but life’s messy—your spouse might need care too, especially if you’re both aging into this. Want to include them to avoid surprises down the road?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name?", value="", help="Enter your spouse or partner's name.")
@@ -427,26 +427,26 @@ def main():
             if col2.button("No, just me"):
                 st.session_state.include_b = False
         elif audience == "One parent":
-            names["A"] = st.text_input("Awesome-so you're planning for one parent. What's their name?", value=names.get("A", "Mom"), help="Enter your parent's name.")
-            st.markdown("Is there someone else—like a spouse—you'd like to plan for too?")
+            names["A"] = st.text_input("Awesome—so you're planning for one parent. What's their name?", value=names.get("A", "Mom"), help="Enter your parent's name.")
+            st.markdown("Focusing on one parent is smart, but if they’re with a spouse, their care could shift everything—finances, home, you name it. Want to plan for their partner too?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name? We'll walk you through both.", value="", help="Enter the spouse or partner's name.")
                 st.session_state.include_b = True
-            if col2.button("No, just me"):
+            if col2.button("No, no spouse"):
                 st.session_state.include_b = False
         elif audience == "Both parents":
-            names["A"] = st.text_input("Awesome-so you're planning for both parents. What's the first parent's name?", value=names.get("A", "Mom"), help="Enter the first parent's name.")
+            names["A"] = st.text_input("Awesome—so you're planning for both parents. What's the first parent's name?", value=names.get("A", "Mom"), help="Enter the first parent's name.")
             names["B"] = st.text_input("What's the second parent's name?", value=names.get("B", "Dad"), help="Enter the second parent's name.")
             st.session_state.include_b = True
         else:  # Loved one or family member
-            names["A"] = st.text_input("Awesome-so you're planning for a loved one or family member. What's their name?", value=names.get("A", "Loved One"), help="Enter the loved one or family member's name.")
-            st.markdown("Is there someone else—like a spouse—you'd like to plan for too?")
+            names["A"] = st.text_input("Awesome—so you're planning for a loved one or family member. What's their name?", value=names.get("A", "Loved One"), help="Enter the loved one or family member's name.")
+            st.markdown("You’re thinking of one loved one, but if they share a life with a spouse, their care plan might need to stretch. Want to include their partner too?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name? We'll walk you through both.", value="", help="Enter the spouse or partner's name.")
                 st.session_state.include_b = True
-            if col2.button("No, just me"):
+            if col2.button("No, no spouse or partner"):
                 st.session_state.include_b = False
         st.markdown("Will you keep the house while care happens?")
         col1, col2 = st.columns(2)
