@@ -303,7 +303,7 @@ def mark_touched(drawer):
 def expander(drawer, title, preview_val=0.0):
     """Render an expander with preview value, with a safe default."""
     is_open = drawer in st.session_state.touched
-    with st.expander(f"{title}", expanded=is_open):
+    with st.expander(title, expanded=is_open):
         return st.container()
 
 def home_mods_ui(inp, spec):
@@ -419,7 +419,7 @@ def main():
         )
         if audience == "Myself":
             names["A"] = st.text_input("Awesome—so you're planning for yourself. What's your name?", value=names.get("A", "Me"), help="Enter your name.")
-            st.markdown("Planning for just you is a start, but life’s messy—your spouse might need care too, especially if you’re both aging into this. Want to include them to avoid surprises down the road?")
+            st.markdown("Planning for just you is a solid start, but if you’ve got a spouse, their costs could pile up while you’re in care. Want to include them?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name?", value="", help="Enter your spouse or partner's name.")
@@ -428,7 +428,7 @@ def main():
                 st.session_state.include_b = False
         elif audience == "One parent":
             names["A"] = st.text_input("Awesome—so you're planning for one parent. What's their name?", value=names.get("A", "Mom"), help="Enter your parent's name.")
-            st.markdown("Focusing on one parent is smart, but if they’re with a spouse, their care could shift everything—finances, home, you name it. Want to plan for their partner too?")
+            st.markdown("Focusing on one parent is smart, but a spouse’s care costs could hit hard if they’re left behind. Want to plan for their partner too?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name? We'll walk you through both.", value="", help="Enter the spouse or partner's name.")
@@ -441,7 +441,7 @@ def main():
             st.session_state.include_b = True
         else:  # Loved one or family member
             names["A"] = st.text_input("Awesome—so you're planning for a loved one or family member. What's their name?", value=names.get("A", "Loved One"), help="Enter the loved one or family member's name.")
-            st.markdown("You’re thinking of one loved one, but if they share a life with a spouse, their care plan might need to stretch. Want to include their partner too?")
+            st.markdown("Great start, but if they live with a spouse, their care might mean extra costs. Want to include their partner?")
             col1, col2 = st.columns(2)
             if col1.button("Yes, add them"):
                 names["B"] = st.text_input("What's their name? We'll walk you through both.", value="", help="Enter the spouse or partner's name.")
@@ -461,43 +461,43 @@ def main():
                 inp["sell_home"] = True
             if col2.button("No, keep it"):
                 inp["sell_home"] = False
-        inp["state"] = st.selectbox("Care costs—like room rates or hourly help—can vary a ton by state. So, where will this be happening?", list(spec["lookups"]["state_multipliers"].keys()), index=0)
+        inp["state"] = st.selectbox("Care costs vary by state—where will this care take place?", list(spec["lookups"]["state_multipliers"].keys()), index=0)
         if st.button("Next →", type="primary", use_container_width=True):
             st.session_state.step = 2
             st.rerun()
 
-    elif st.session_state.step = 2:
+    elif st.session_state.step == 2:
         st.header(f"Care needs for {names['A']}")
-        st.markdown(f"We'll handle {names.get('B', 'their partner')}’s right after—just focus here first.")
+        st.markdown(f"We’ll plan for {names.get('B', 'their partner')} next—just focus on {names['A']} here.")
         care_types = ["In-Home Care", "Assisted Living (or Adult Family Home)", "Memory Care", "None"]
-        inp[f"care_type_a"] = st.selectbox(f"Care type for {names['A']}", care_types, index=care_types.index(inp.get(f"care_type_a", "None")), help="Select the care level needed.")
+        inp[f"care_type_a"] = st.selectbox(f"What care type for {names['A']}?", care_types, index=care_types.index(inp.get(f"care_type_a", "None")), help="Choose the type of care needed.")
         if inp[f"care_type_a"].startswith("In-Home"):
-            inp[f"hours_a"] = st.slider(f"Daily hours for {names['A']}", 0, 24, int(inp.get(f"hours_a", 4)), help="Estimate hours of care needed per day.")
-            inp[f"days_a"] = st.slider(f"Days per month for {names['A']}", 0, 30, int(inp.get(f"days_a", 20)), help="Estimate days per month for care.")
-            inp[f"care_level_a"] = st.selectbox(f"Care level for {names['A']} (Low: occasional checks, meals/meds; Medium: daily help, bathing; High: full-time care)", ["Low", "Medium", "High"], index=1)
-            inp[f"mobility_a"] = st.selectbox(f"Mobility for {names['A']} (Gets around fine-no help; Uses cane or walker; Needs wheelchair)", ["Gets around fine-no help", "Uses cane or walker", "Needs wheelchair"], index=0)
-            inp[f"chronic_a"] = st.selectbox(f"Chronic conditions for {names['A']} (None; Some: like diabetes or heart issues; Multiple/Complex: multiple serious conditions)", ["None", "Some (like diabetes or heart issues)", "Multiple/Complex (multiple serious conditions)"], index=0)
+            inp[f"hours_a"] = st.slider(f"How many hours daily for {names['A']}?", 0, 24, int(inp.get(f"hours_a", 4)), help="Estimate daily care hours.")
+            inp[f"days_a"] = st.slider(f"How many days monthly for {names['A']}?", 0, 30, int(inp.get(f"days_a", 20)), help="Estimate monthly care days.")
+            inp[f"care_level_a"] = st.selectbox(f"Care level for {names['A']} (Low: basic support; Medium: regular assistance; High: constant care)", ["Low", "Medium", "High"], index=1)
+            inp[f"mobility_a"] = st.selectbox(f"Mobility for {names['A']} (Low: independent; Medium: some aid; High: limited)", ["Low", "Medium", "High"], index=1)
+            inp[f"chronic_a"] = st.selectbox(f"Chronic conditions for {names['A']} (None; Some: manageable; Multiple/Complex: severe)", ["None", "Some", "Multiple/Complex"], index=0)
         elif inp[f"care_type_a"] in ["Assisted Living (or Adult Family Home)", "Memory Care"]:
-            inp[f"room_a"] = st.selectbox(f"Room type for {names['A']}", ["Studio", "1 Bedroom", "Shared"], index=0)
-            inp[f"care_level_a"] = st.selectbox(f"Care level for {names['A']} (Low: occasional checks, meals/meds; Medium: daily help, bathing; High: full-time care)", ["Low", "Medium", "High"], index=1)
-            inp[f"mobility_a"] = st.selectbox(f"Mobility for {names['A']} (Gets around fine-no help; Uses cane or walker; Needs wheelchair)", ["Gets around fine-no help", "Uses cane or walker", "Needs wheelchair"], index=0)
-            inp[f"chronic_a"] = st.selectbox(f"Chronic conditions for {names['A']} (None; Some: like diabetes or heart issues; Multiple/Complex: multiple serious conditions)", ["None", "Some (like diabetes or heart issues)", "Multiple/Complex (multiple serious conditions)"], index=0)
+            inp[f"room_a"] = st.selectbox(f"Room type for {names['A']}?", ["Studio", "1 Bedroom", "Shared"], index=0)
+            inp[f"care_level_a"] = st.selectbox(f"Care level for {names['A']} (Low: basic support; Medium: regular assistance; High: constant care)", ["Low", "Medium", "High"], index=1)
+            inp[f"mobility_a"] = st.selectbox(f"Mobility for {names['A']} (Low: independent; Medium: some aid; High: limited)", ["Low", "Medium", "High"], index=1)
+            inp[f"chronic_a"] = st.selectbox(f"Chronic conditions for {names['A']} (None; Some: manageable; Multiple/Complex: severe)", ["None", "Some", "Multiple/Complex"], index=0)
 
         if st.session_state.get("include_b", False):
             st.markdown("---")
-            st.header(f"Now—care needs for {names['B']}")
-            inp[f"care_type_b"] = st.selectbox(f"Care type for {names['B']}", care_types, index=care_types.index(inp.get(f"care_type_b", "None")), help="Select the care level needed.")
+            st.header(f"Now, care needs for {names['B']}")
+            inp[f"care_type_b"] = st.selectbox(f"What care type for {names['B']}?", care_types, index=care_types.index(inp.get(f"care_type_b", "None")), help="Choose the type of care needed.")
             if inp[f"care_type_b"].startswith("In-Home"):
-                inp[f"hours_b"] = st.slider(f"Daily hours for {names['B']}", 0, 24, int(inp.get(f"hours_b", 4)), help="Estimate hours of care needed per day.")
-                inp[f"days_b"] = st.slider(f"Days per month for {names['B']}", 0, 30, int(inp.get(f"days_b", 20)), help="Estimate days per month for care.")
-                inp[f"care_level_b"] = st.selectbox(f"Care level for {names['B']} (Low: occasional checks, meals/meds; Medium: daily help, bathing; High: full-time care)", ["Low", "Medium", "High"], index=1)
-                inp[f"mobility_b"] = st.selectbox(f"Mobility for {names['B']} (Gets around fine-no help; Uses cane or walker; Needs wheelchair)", ["Gets around fine-no help", "Uses cane or walker", "Needs wheelchair"], index=0)
-                inp[f"chronic_b"] = st.selectbox(f"Chronic conditions for {names['B']} (None; Some: like diabetes or heart issues; Multiple/Complex: multiple serious conditions)", ["None", "Some (like diabetes or heart issues)", "Multiple/Complex (multiple serious conditions)"], index=0)
+                inp[f"hours_b"] = st.slider(f"How many hours daily for {names['B']}?", 0, 24, int(inp.get(f"hours_b", 4)), help="Estimate daily care hours.")
+                inp[f"days_b"] = st.slider(f"How many days monthly for {names['B']}?", 0, 30, int(inp.get(f"days_b", 20)), help="Estimate monthly care days.")
+                inp[f"care_level_b"] = st.selectbox(f"Care level for {names['B']} (Low: basic support; Medium: regular assistance; High: constant care)", ["Low", "Medium", "High"], index=1)
+                inp[f"mobility_b"] = st.selectbox(f"Mobility for {names['B']} (Low: independent; Medium: some aid; High: limited)", ["Low", "Medium", "High"], index=1)
+                inp[f"chronic_b"] = st.selectbox(f"Chronic conditions for {names['B']} (None; Some: manageable; Multiple/Complex: severe)", ["None", "Some", "Multiple/Complex"], index=0)
             elif inp[f"care_type_b"] in ["Assisted Living (or Adult Family Home)", "Memory Care"]:
-                inp[f"room_b"] = st.selectbox(f"Room type for {names['B']}", ["Studio", "1 Bedroom", "Shared"], index=0)
-                inp[f"care_level_b"] = st.selectbox(f"Care level for {names['B']} (Low: occasional checks, meals/meds; Medium: daily help, bathing; High: full-time care)", ["Low", "Medium", "High"], index=1)
-                inp[f"mobility_b"] = st.selectbox(f"Mobility for {names['B']} (Gets around fine-no help; Uses cane or walker; Needs wheelchair)", ["Gets around fine-no help", "Uses cane or walker", "Needs wheelchair"], index=0)
-                inp[f"chronic_b"] = st.selectbox(f"Chronic conditions for {names['B']} (None; Some: like diabetes or heart issues; Multiple/Complex: multiple serious conditions)", ["None", "Some (like diabetes or heart issues)", "Multiple/Complex (multiple serious conditions)"], index=0)
+                inp[f"room_b"] = st.selectbox(f"Room type for {names['B']}?", ["Studio", "1 Bedroom", "Shared"], index=0)
+                inp[f"care_level_b"] = st.selectbox(f"Care level for {names['B']} (Low: basic support; Medium: regular assistance; High: constant care)", ["Low", "Medium", "High"], index=1)
+                inp[f"mobility_b"] = st.selectbox(f"Mobility for {names['B']} (Low: independent; Medium: some aid; High: limited)", ["Low", "Medium", "High"], index=1)
+                inp[f"chronic_b"] = st.selectbox(f"Chronic conditions for {names['B']} (None; Some: manageable; Multiple/Complex: severe)", ["None", "Some", "Multiple/Complex"], index=0)
 
         c1, c2 = st.columns(2)
         if c1.button("← Back", use_container_width=True):
@@ -584,12 +584,13 @@ def main():
         if res["gap"] <= 0.0:
             st.success("No deficit. Your monthly income covers the planned costs, so assets are not needed for ongoing expenses.")
         else:
-            months = int(res["years"] * 12) if res["years"] != float("inf") else "Forever"
-            st.info(f"At a monthly deficit of {mfmt(res['gap'])}, your liquid assets of {mfmt(res['liquid'])} will last about **{res['years']:.1f} years** ({months} months).")
-            data = pd.DataFrame({"Years Funded": [res["years"]]})
-            chart = alt.Chart(data).mark_bar(color="#4CAF50").encode(
+            years = res["years"]
+            months = int(years * 12) if years != float("inf") else "Forever"
+            st.info(f"With a monthly gap of {mfmt(res['gap'])}, your liquid assets of {mfmt(res['liquid'])} could last about {years:.1f} years ({months} months).")
+            data = pd.DataFrame({"Years Funded": [years]})
+            chart = alt.Chart(data).mark_bar().encode(
                 x=alt.X("Years Funded:Q", title="Years Funded"),
-                tooltip=alt.Tooltip("Years Funded:Q", format=".1f")
+                tooltip=[alt.Tooltip("Years Funded:Q", format=".1f")]
             ).properties(width="container")
             st.altair_chart(chart, use_container_width=True)
         st.markdown("**Note**: This is an estimate. Consult a financial advisor for personalized planning.")
@@ -599,35 +600,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-### Updated CHANGELOG.md
-Add this to the end of your `CHANGELOG.md`:
-```
-## 2025-09-03
-- Fixed `expander() missing 1 required positional argument: 'title'` error in Step 3 by ensuring all expander calls include a title parameter.
-- Removed preview value from expander titles to prevent display issues.
-- Updated `APP_VERSION` to `v2025-09-03-rb24`.
-- Retained all previous updates: yes/no buttons, home mods, sell-home logic, care level/context, mobility, chronic conditions, VA link in Benefits, Altair chart fix, Step 3 expander title fix.
-```
-
-### Deployment Instructions
-1. **Replace File**:
-   - Overwrite `streamlit_app.py` with the code above, commit with “Fix expander title error, update to v2025-09-03-rb24”.
-   - Update `CHANGELOG.md` with the new entry, commit with “Update CHANGELOG for rb24”.
-   - Reuse other files from `v2025-09-03-rb23`.
-
-3. **Redeploy to Streamlit Cloud**:
-   - Redeploy, check logs for errors.
-   - Verify no errors, `App v2025-09-03-rb24` shows.
-   - Test flow: Pick “Myself” → Enter “John” → Yes, include spouse → Enter “Terry” → Yes, keep home → Yes, sell → Washington → Next.
-   - Step 2: John’s In-Home, Terry’s None.
-   - Step 3: All drawers open, no errors.
-   - Step 4: Chart displays.
-
-### Notes
-- **Fix**: The `expander` call now has a default title, no crash.
-- **Flow**: Maintains prior updates, no regressions.
-- **Next**: Test Step 3 thoroughly, especially with multiple people. Report back if any thing’s off.
-
-Deploy and let me know how it runs! We’re almost there.
